@@ -10,7 +10,7 @@ class BookInfo(models.Model):
     # 书名
     bname = models.CharField(max_length=20)
     # 图书与读者的关系
-    breader = models.ForeignKey('ReaderInfo',on_delete=models.CASCADE)
+    breader = models.ForeignKey('ReaderInfo', on_delete=models.CASCADE)
 
     def __str__(self):
         """返回书名"""
