@@ -1,4 +1,4 @@
-
+import sys
 import pandas as pd
 import re
 import time
@@ -8,7 +8,7 @@ import threading
 dataReaded = pd.read_excel('2016-2018借书.xlsx')
 
 
-def clean(df,pattern=r'(2\d{10})'):
+def clean(df, pattern=r'(2\d{10})'):
     """筛选出可利用的数据"""
     r = df.tolist()
     p = []
@@ -25,6 +25,7 @@ rdataReaded = dataReaded[['读者号', '读者']].drop_duplicates(['读者号', 
 # 清洗数据
 rdataReaded = rdataReaded.where(rdataReaded['读者号'].isin(clean(rdataReaded['读者号'])))
 rdataReaded = rdataReaded.dropna(axis=0)
+print('开始存数据1')
 # 存数据到excel表格中
 rdataReaded.to_excel('rdataReaded.xlsx', index=False, sheet_name='rdataReaded')
 
@@ -32,6 +33,7 @@ rdataReaded.to_excel('rdataReaded.xlsx', index=False, sheet_name='rdataReaded')
 bdataReaded = dataReaded[['题名', '馆藏', '读者号']]
 bdataReaded = bdataReaded.where(bdataReaded['读者号'].isin(clean(bdataReaded['读者号'])))
 bdataReaded = bdataReaded.dropna(axis=0)
+print('开始存数据2')
 # 存数据到excel表格中
 bdataReaded.to_excel('bdataReaded.xlsx', index=False, sheet_name='bdataReaded')
 
@@ -55,7 +57,7 @@ class GetIdThread(threading.Thread):
 
 def get_id_main():
     """根据另一个表中的数据，修改本表的数据"""
-    while True:  # 由于for循环太慢，跑不出来，所以我用了迭代器，才能跑出来
+    while True:
         try:
             r1 = next(it1)
             it2 = iter(range(data_readerinfo.shape[0]))
@@ -67,24 +69,12 @@ def get_id_main():
 
         except StopIteration:
             print('用时：', time.clock() - start)
+            bdata_readed = bdataReaded.drop_duplicates(subset=['题名', '读者号id'])
+            bdata_readed.to_excel('bdataReaded.xlsx', index=False, sheet_name='new_bdataReaded')
+            sys.exit()
 
 
 thread = GetIdThread()
 thread.start()
 thread.join()
 print('退出主线程')
-bdataReaded.to_excel('bdataReaded.xlsx', index=False, sheet_name='new_bdataReaded')
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,7 +8,7 @@ class BookInfo(models.Model):
     # 馆藏地址
     baddress = models.CharField(max_length=20)
     # 书名
-    bname = models.CharField(max_length=20)
+    bname = models.CharField(max_length=100)
     # 图书与读者的关系
     breader = models.ForeignKey('ReaderInfo', on_delete=models.CASCADE)
 
@@ -17,7 +17,7 @@ class BookInfo(models.Model):
         return self.bname
 
     class Meta:
-        db_table = ''
+        db_table = 'bookInfo'
 
 
 class ReaderInfo(models.Model):
@@ -26,6 +26,9 @@ class ReaderInfo(models.Model):
     rid = models.CharField(max_length=20)
     # 读者名
     rname = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'readerInfo'
 
     def __str__(self):
         """返回读者号"""
